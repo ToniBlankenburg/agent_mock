@@ -1,0 +1,5 @@
+[
+  { "email": "anna@example.com", "plan": "Pro", "renewsOn": "2026-07-01", "status": "active" },
+  { "email": "ben@example.com", "plan": "Basic", "renewsOn": "2026-06-10", "status": "active" },
+  { "email": "cara@example.com", "plan": "Pro", "renewsOn": null, "status": "cancelled" }
+]

@@ -1,0 +1,5 @@
+[
+  { "orderId": "ORD-001", "status": "shipped", "eta": "2026-06-05", "item": "Wireless Headphones" },
+  { "orderId": "ORD-002", "status": "processing", "eta": null, "item": "Mechanical Keyboard" },
+  { "orderId": "ORD-003", "status": "delivered", "eta": null, "item": "USB-C Hub" }
+]
