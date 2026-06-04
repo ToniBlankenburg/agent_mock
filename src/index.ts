@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 
 const history: Message[] = [];
 rl.on('line', (message) => {
-  rl.pause
+  rl.pause();
   chat(message, history)
   .then((response: string) => {
     history.push({ role: "user", text: message });
