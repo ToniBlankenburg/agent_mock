@@ -7,9 +7,17 @@ const rl = readline.createInterface({
 
 const history: Message[] = [];
 rl.on('line', (message) => {
-  chat(message, history).then((response: string) => {
+  rl.pause
+  chat(message, history)
+  .then((response: string) => {
     history.push({ role: "user", text: message });
     history.push({ role: "model", text: response });
     console.log(response);
+  })
+  .catch((error) => {
+    console.error("Error:", error.message);
+  })
+  .finally(() => {
+    rl.resume();
   });
 });
