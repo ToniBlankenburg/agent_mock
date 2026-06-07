@@ -26,3 +26,7 @@ export function lookup_subscription(email: string): Subscription | null {
     
     return subscriptions.find(subscription => subscription.email === email) || null;
 }
+
+export function escalate_to_human(reason: string): string {
+    return "Escalated. A Human agent will follow up within 2 hours. Reason: " + reason;
+}

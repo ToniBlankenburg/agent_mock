@@ -1,4 +1,4 @@
-import { lookup_order, lookup_subscription } from "./tools";
+import { escalate_to_human, lookup_order, lookup_subscription } from "./tools";
 import {retrieveChunks} from "./faq";
 
 function executeTool(name: string, args: any): string {
@@ -9,6 +9,8 @@ function executeTool(name: string, args: any): string {
         case "lookup_subscription":
             const subscription = lookup_subscription(args.email);
             return subscription ? JSON.stringify(subscription) : "Subscription not found.";
+        case "escalate_to_human":
+            return escalate_to_human(args.reason);
         default:
             return "Unknown tool";
     }
@@ -22,7 +24,10 @@ export async function chat(userMessage: string, history: Message[]): Promise<str
     ];
 
     const context = retrieveChunks(userMessage, 2).join("\n\n");
-    const systemPrompt = `You are a helpful customer support assistant. Use the following context to answer the user's question:\n\n${context}. If the answer is not in the provided context or tool results, say "I don't have that information." Do not guess.`;
+    const systemPrompt = `You are a helpful customer support assistant. 
+        Use the following context to answer the user's question:\n\n${context}. 
+        If the answer is not in the provided context or tool results, say "I don't have that information." Do not guess. 
+        When a Customer is frustrated or angry or Request is out of scope or Tool returns error two turns in a row use the tool escalate_to_human with reason "Customer is frustrated" or "Request is out of scope" or "Tool error".`;
 
     while (true) {
         const response = await fetch(
@@ -55,7 +60,18 @@ export async function chat(userMessage: string, history: Message[]): Promise<str
                                     },
                                     required: ["email"]
                                 }
-                            }
+                            },
+                            {
+                                name: "escalate_to_human",
+                                description: "Escalate the conversation to a human agent with a reason",
+                                parameters: {
+                                    type: "object",
+                                    properties: {
+                                        reason: { type: "string", description: "The reason for escalation" }
+                                    },
+                                    required: ["reason"]
+                                }
+                            },
                         ]
                     }],
                     systemInstruction: { parts: [{ text: systemPrompt }] }

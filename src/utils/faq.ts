@@ -1,8 +1,15 @@
-import Faq from '../data/faq.md';
+
+import {readFileSync} from 'fs';
 
 function loadFaqChunks(): string[] {
     return Faq.split('##').map((chunk:string) => chunk.trim()).filter((chunk: string) => chunk.length > 0);
 }
+
+function loadFaq(): string {
+    return readFileSync('./src/data/faq.md', 'utf-8');
+}
+
+const Faq = loadFaq();
 
 export function retrieveChunks(userMessage: string, topN: number = 3): string[] {
     const words = userMessage.toLowerCase().split(/\s+/);
