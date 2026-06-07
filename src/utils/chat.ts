@@ -1,4 +1,5 @@
 import { lookup_order, lookup_subscription } from "./tools";
+import {retrieveChunks} from "./faq";
 
 function executeTool(name: string, args: any): string {
     switch (name) {
@@ -19,6 +20,9 @@ export async function chat(userMessage: string, history: Message[]): Promise<str
         ...history.map((m) => ({ role: m.role, parts: [{ text: m.text }] })),
         { role: "user", parts: [{ text: userMessage }] }
     ];
+
+    const context = retrieveChunks(userMessage, 2).join("\n\n");
+    const systemPrompt = `You are a helpful customer support assistant. Use the following context to answer the user's question:\n\n${context}. If the answer is not in the provided context or tool results, say "I don't have that information." Do not guess.`;
 
     while (true) {
         const response = await fetch(
@@ -53,7 +57,8 @@ export async function chat(userMessage: string, history: Message[]): Promise<str
                                 }
                             }
                         ]
-                    }]
+                    }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
                 }),
             }
         );
