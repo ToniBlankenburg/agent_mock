@@ -1,16 +1,15 @@
 
 import {readFileSync} from 'fs';
+import {resolve} from 'path';
 
-function loadFaqChunks(): string[] {
-    const faq = readFileSync(__dirname + '/../data/faq.md', 'utf-8');
+const FAQ_CHUNKS = readFileSync(resolve(__dirname, '../data/faq.md'), 'utf-8')
+    .split('##').map((chunk:string) => chunk.trim()).filter((chunk: string) => chunk.length > 0);
 
-    return faq.split('##').map((chunk:string) => chunk.trim()).filter((chunk: string) => chunk.length > 0);
-}
 
 export function retrieveChunks(userMessage: string, topN: number = 3): string[] {
     const words = userMessage.toLowerCase().split(/\s+/);
     
-    return loadFaqChunks()
+    return FAQ_CHUNKS
         .map((chunk: string) => ({
             chunk,
             score: words.filter(word =>chunk.toLowerCase().includes(word)).length
